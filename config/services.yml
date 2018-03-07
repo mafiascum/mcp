@@ -1,0 +1,10 @@
+services:
+    mafiascum.mcp.listener:
+        class: mafiascum\mcp\event\main_listener
+        arguments:
+            - '@template'
+            - '@dbal.conn'
+            - '@user'
+            - '@auth'
+        tags:
+            - { name: event.listener }
