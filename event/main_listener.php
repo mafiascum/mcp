@@ -23,6 +23,8 @@ class main_listener implements EventSubscriberInterface
         return array(
 			'core.report_post_auth' => 'report_post_auth',
 			'core.mcp_reports_report_details_query_after' => 'mcp_reports_report_details_query_after',
+			'core.mcp_report_template_data' => 'mcp_report_template_data',
+			'core.mcp_reports_modify_post_row' => 'mcp_reports_modify_post_row',
         );
     }
 
@@ -37,6 +39,24 @@ class main_listener implements EventSubscriberInterface
 		$this->user = $user;
 		$this->auth = $auth;
     }
+
+	function mcp_reports_modify_post_row($event) {
+		$post_row = $event['post_row'];
+		$row = $event['row'];
+
+		$post_row['POST_SUBJECT'] = ($row['topic_title']) ? $row['topic_title'] : $this->user->lang['NO_SUBJECT'];
+
+		$event['post_row'] = $post_row;
+	}
+
+	function mcp_report_template_data($event) {
+		$report_template = $event['report_template'];
+		$post_info = $event['post_info'];
+
+		$report_template['POST_SUBJECT'] = ($post_info['topic_title']) ? $post_info['topic_title'] : $this->user->lang['NO_SUBJECT'];
+
+		$event['report_template'] = $report_template;
+	}
 
 	public function report_post_auth($event) {
 		//This prevents blocking multiple reports on the same post from being submitted.
